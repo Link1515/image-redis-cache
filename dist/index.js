@@ -1,8 +1,7 @@
 import express from 'express';
+import image from './routes/image';
 const app = express();
-app.get('/', (req, res) => {
-    res.send('hello');
-});
+app.use('/image', image);
 app.listen(3000, () => {
-    console.log('hi');
+    console.log('server running');
 });
