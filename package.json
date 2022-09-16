@@ -3,7 +3,7 @@
   "type": "module",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
+  "main": "index.ts",
   "scripts": {
     "start": "set NODE_ENV=production && tsc && npm run run-server",
     "dev": "set NODE_ENV=development && concurrently -c gray npm:watch-ts npm:run-server:dev",
