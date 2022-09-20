@@ -1,7 +1,8 @@
 import type { Request, Response, NextFunction } from 'express'
 
 export default (req: Request, res: Response, next: NextFunction): void => {
-  const url: string | null = (req.query.u as string) ?? null
+  // const url: string | null = (req.query.u as string) ?? null
+  const { u: url } = req.query
 
   if (url === null) {
     res.status(400).send({
