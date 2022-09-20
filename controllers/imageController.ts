@@ -1,68 +1,15 @@
 import axios from 'axios'
-import type { Request, Response } from 'express'
+import type { Response } from 'express'
 import sharp from 'sharp'
-import type { QueryString, QueryStringExt, QueryStringFit } from '../types'
+import type { RequestImage } from '../types'
 
-export default async (req: Request, res: Response): Promise<void> => {
+export default async (req: RequestImage, res: Response): Promise<void> => {
+  if (req.checkedVar === undefined) {
+    throw new Error('req.checkedVar is undefined')
+  }
+  const { src, ext, width, height, fit } = req.checkedVar
+
   try {
-    /**
-     * get query string
-     */
-    // #region get query string
-    const src: QueryString = req.query.src as QueryString
-    let ext: QueryStringExt = (req.query.ext as QueryStringExt) ?? 'avif'
-    const w: QueryString = req.query.w as QueryString
-    const h: QueryString = req.query.h as QueryString
-    const fit: QueryStringFit = (req.query.fit as QueryStringFit) ?? 'cover'
-    // #endregion get query string
-
-    /**
-     * check query string
-     */
-    // #region check query string
-    // ***** check src *****
-    if (src === undefined) {
-      res.status(400).send({
-        message: 'src is required, i.e., query string must have src parameter'
-      })
-      return
-    }
-
-    if (src.length === 0) {
-      res.status(400).send({
-        message: 'src is required, but get an empty string'
-      })
-      return
-    }
-
-    // ***** check ext *****
-    if (
-      ext !== 'jpg' &&
-      ext !== 'jpeg' &&
-      ext !== 'png' &&
-      ext !== 'gif' &&
-      ext !== 'webp' &&
-      ext !== 'avif'
-    ) {
-      res.status(400).send({
-        message:
-          'ext can only be avif, webp, jpg, jpge, png, gif. Default is avif.'
-      })
-      return
-    }
-
-    if (ext === 'jpg') {
-      ext = 'jpeg'
-    }
-
-    // ***** check fit *****
-    if (fit !== 'cover' && fit !== 'contain') {
-      res.status(400).send({
-        message: 'fit can only be cover or contain. Default is cover.'
-      })
-      return
-    }
-
     /**
      * fetch src get image buffer
      */
@@ -75,16 +22,10 @@ export default async (req: Request, res: Response): Promise<void> => {
       return
     }
 
-    // #endregion
-
     /**
      * modify image file
      */
-    // #region modify image file
     const modifiedImage = await sharp(response.data)[ext]()
-
-    const width = w !== undefined ? parseInt(w) : undefined
-    const height = h !== undefined ? parseInt(h) : undefined
 
     if (width !== undefined || height !== undefined || fit !== undefined) {
       modifiedImage.resize({
@@ -96,7 +37,6 @@ export default async (req: Request, res: Response): Promise<void> => {
     }
 
     const buffer = await modifiedImage.toBuffer()
-    // #endregion modify image file
 
     /**
      * send response
@@ -104,12 +44,13 @@ export default async (req: Request, res: Response): Promise<void> => {
     res.setHeader('content-type', `image/${ext}`)
     res.send(buffer)
   } catch (error) {
-    console.log(error)
     if (axios.isAxiosError(error)) {
-      res.status(400).send({ message: error.message })
+      console.log(error.message)
+      res.status(400).send({ message: `cannot fetch data from ${src}` })
       return
     }
 
+    console.log(error)
     res.status(500).send({ message: 'Server Error' })
   }
 }
