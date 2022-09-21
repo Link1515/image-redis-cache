@@ -8,7 +8,7 @@ export type Fit = 'cover' | 'contain'
 
 export interface RequestImage extends Request {
   checkedVar?: {
-    src: string
+    url: string
     ext: Exclude<Ext, 'jpg'>
     width: number | undefined
     height: number | undefined

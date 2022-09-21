@@ -7,18 +7,18 @@ export default async (req: RequestImage, res: Response): Promise<void> => {
   if (req.checkedVar === undefined) {
     throw new Error('req.checkedVar is undefined')
   }
-  const { src, ext, width, height, fit } = req.checkedVar
+  const { url, ext, width, height, fit } = req.checkedVar
 
   try {
     /**
-     * fetch src get image buffer
+     * fetch image buffer
      */
-    const response = await axios.get(src, { responseType: 'arraybuffer' })
+    const response = await axios.get(url, { responseType: 'arraybuffer' })
 
     if (!response.headers['content-type'].includes('image')) {
       res
         .status(400)
-        .send({ message: 'content-type of src response is not image' })
+        .send({ message: 'content-type of url response is not image/*' })
       return
     }
 
@@ -46,7 +46,7 @@ export default async (req: RequestImage, res: Response): Promise<void> => {
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log(error.message)
-      res.status(400).send({ message: `cannot fetch data from ${src}` })
+      res.status(400).send({ message: `cannot fetch data from ${url}` })
       return
     }
 
