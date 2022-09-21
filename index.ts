@@ -2,6 +2,7 @@ import express from 'express'
 import dotenv from 'dotenv'
 
 // routes
+import docs from './routes/docs'
 import image from './routes/image'
 
 // set env
@@ -11,6 +12,7 @@ dotenv.config({ path: `./.env.${currentEnv}` })
 const app = express()
 
 app.use('/image', image)
+app.use('/docs', docs)
 
 app.all('*', (req, res) => {
   res.status(404).send({ message: '404 not found' })

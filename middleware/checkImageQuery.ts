@@ -37,8 +37,7 @@ export default (req: RequestImage, res: Response, next: NextFunction): void => {
   ) {
     res.status(400).send({
       message:
-        // eslint-disable-next-line max-len
-        "ext can only be 'avif', 'webp', 'jpg', 'jpge', 'png', 'gif'. Default is 'avif'."
+        "ext can only be 'avif', 'webp', 'jpg', 'jpeg', 'png', 'gif'. Default is 'avif'."
     })
     return
   }
