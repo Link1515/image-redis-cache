@@ -14,7 +14,7 @@ const router = Router()
  * @swagger
  *  /image:
  *    get:
- *      description: convert image format or resize image
+ *      description: Convert image format or resize image. *Svg will not be convert!
  *      tags:
  *        - Image
  *      parameters:

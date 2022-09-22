@@ -22,6 +22,13 @@ export default async (req: RequestImage, res: Response): Promise<void> => {
       return
     }
 
+    // do not convert svg
+    if (response.headers['content-type'].includes('image/svg+xml')) {
+      res.setHeader('content-type', 'image/svg+xml')
+      res.send(response.data)
+      return
+    }
+
     /**
      * modify image file
      */
