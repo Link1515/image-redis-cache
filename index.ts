@@ -2,8 +2,8 @@ import express from 'express'
 import dotenv from 'dotenv'
 
 // routes
-import docs from './routes/docs'
-import image from './routes/image'
+import docs from './routes/docs.route'
+import image from './routes/image.route'
 
 // set env
 const currentEnv = process.env.NODE_ENV?.trim() ?? 'development'

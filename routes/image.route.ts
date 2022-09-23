@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import imageController from '../controllers/imageController'
-import checkImageQuery from '../middleware/checkImageQuery'
+import imageController from '../controllers/image.controller'
+import checkQueryImage from '../middleware/checkQueryImage.middleware'
 
 const router = Router()
 
@@ -67,6 +67,6 @@ const router = Router()
  *                    description: error message
  */
 
-router.get('/', checkImageQuery, imageController)
+router.get('/', checkQueryImage, imageController)
 
 export default router
