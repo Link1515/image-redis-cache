@@ -1,5 +1,6 @@
 import express from 'express'
 import dotenv from 'dotenv'
+import compression from 'compression'
 
 // routes
 import docs from './routes/docs.route'
@@ -10,6 +11,8 @@ const currentEnv = process.env.NODE_ENV?.trim() ?? 'development'
 dotenv.config({ path: `./.env.${currentEnv}` })
 
 const app = express()
+
+app.use(compression())
 
 app.use('/image', image)
 app.use('/docs', docs)
