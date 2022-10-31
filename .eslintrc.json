@@ -9,13 +9,13 @@
     "ecmaVersion": "latest",
     "sourceType": "module",
     "project": "./tsconfig.json"
-  },
-  "rules": {
-    "@typescript-eslint/no-misused-promises": [
-      "error",
-      {
-        "checksVoidReturn": false
-      }
-    ]
   }
+  // "rules": {
+  // "@typescript-eslint/no-misused-promises": [
+  //   "error",
+  //   {
+  //     "checksVoidReturn": false
+  //   }
+  // ]
+  // }
 }

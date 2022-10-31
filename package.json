@@ -7,7 +7,7 @@
   "scripts": {
     "start": "set NODE_ENV=production && tsc && npm run run-server",
     "dev": "set NODE_ENV=development && concurrently -c gray npm:watch-ts npm:run-server:dev",
-    "run-server:dev": "nodemon --experimental-specifier-resolution=node dist/index.js",
+    "run-server:dev": "nodemon --es-module-specifier-resolution=node dist/index.js",
     "run-server": "node --experimental-specifier-resolution=node ./dist/index.js",
     "watch-ts": "tsc --watch"
   },
