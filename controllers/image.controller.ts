@@ -1,15 +1,12 @@
 import axios from 'axios'
-import type { Response } from 'express'
-import type { RequestImage } from '../types'
+import type { Request, Response } from 'express'
+import type { ImageQueries } from '../types'
 import { commandOptions } from 'redis'
 import { client as redisClient } from '../redis-client'
 import { imageConvertFileType, imageResize } from '../utils/imageModify'
 
-export default async (req: RequestImage, res: Response): Promise<Response> => {
-  if (req.checkedVar === undefined) {
-    throw new Error('req.checkedVar is undefined')
-  }
-  const { url, ext, width, height, fit } = req.checkedVar
+const get = async (req: Request, res: Response): Promise<Response> => {
+  const { url, ext, width, height, fit } = req.query as unknown as ImageQueries
 
   try {
     /**
@@ -43,9 +40,9 @@ export default async (req: RequestImage, res: Response): Promise<Response> => {
       const response = await axios.get(url, { responseType: 'arraybuffer' })
 
       if (!response.headers['content-type'].includes('image')) {
-        return res
-          .status(400)
-          .send({ message: 'content-type of url response is not image/*' })
+        return res.status(400).send({
+          message: 'content-type of url response is not image/*'
+        })
       }
 
       // if image is svg type, just return to client
@@ -80,4 +77,8 @@ export default async (req: RequestImage, res: Response): Promise<Response> => {
     console.log(error)
     return res.status(500).send({ message: 'Server Error' })
   }
+}
+
+export default {
+  get
 }

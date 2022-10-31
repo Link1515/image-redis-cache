@@ -1,5 +1,3 @@
-import type { Request } from 'express'
-
 export type QueryString = string | undefined
 
 export type Ext = 'jpg' | 'jpeg' | 'png' | 'gif' | 'webp' | 'avif'
@@ -12,12 +10,10 @@ export interface ImageResizeProperty {
   fit: Fit
 }
 
-export interface RequestImage extends Request {
-  checkedVar?: {
-    url: string
-    ext: Exclude<Ext, 'jpg'>
-    width: number | undefined
-    height: number | undefined
-    fit: Fit
-  }
+export interface ImageQueries {
+  url: string
+  ext: Exclude<Ext, 'jpg'>
+  width: number | undefined
+  height: number | undefined
+  fit: Fit
 }
