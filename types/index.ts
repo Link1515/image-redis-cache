@@ -6,6 +6,12 @@ export type Ext = 'jpg' | 'jpeg' | 'png' | 'gif' | 'webp' | 'avif'
 
 export type Fit = 'cover' | 'contain'
 
+export interface ImageResizeProperty {
+  width: number | undefined
+  height: number | undefined
+  fit: Fit
+}
+
 export interface RequestImage extends Request {
   checkedVar?: {
     url: string

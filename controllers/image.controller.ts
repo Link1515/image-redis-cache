@@ -1,9 +1,11 @@
 import axios from 'axios'
 import type { Response } from 'express'
-import sharp from 'sharp'
 import type { RequestImage } from '../types'
+import { commandOptions } from 'redis'
+import { client as redisClient } from '../redis-client'
+import { imageConvertFileType, imageResize } from '../utils/imageModify'
 
-export default async (req: RequestImage, res: Response): Promise<void> => {
+export default async (req: RequestImage, res: Response): Promise<Response> => {
   if (req.checkedVar === undefined) {
     throw new Error('req.checkedVar is undefined')
   }
@@ -11,53 +13,71 @@ export default async (req: RequestImage, res: Response): Promise<void> => {
 
   try {
     /**
-     * fetch image buffer
+     * check if url in the redis db
      */
-    const response = await axios.get(url, { responseType: 'arraybuffer' })
+    const urlIsCached = Boolean(await redisClient.exists(url))
+    let buffer: Buffer
 
-    if (!response.headers['content-type'].includes('image')) {
-      res
-        .status(400)
-        .send({ message: 'content-type of url response is not image/*' })
-      return
-    }
+    if (urlIsCached) {
+      /**
+       * get image buffer from redis db
+       */
+      const cachedBuffer = await redisClient.hGet(commandOptions({ returnBuffers: true }), url, ext)
 
-    // do not convert svg
-    if (response.headers['content-type'].includes('image/svg+xml')) {
-      res.setHeader('content-type', 'image/svg+xml')
-      res.send(response.data)
-      return
+      if (cachedBuffer != null) {
+        // redis db have exactly type buffer
+        buffer = cachedBuffer
+      } else {
+        // redis db do not have specify type buffer.
+        // use any other buffer to convert to specify type
+        const cachedExtList = await redisClient.hKeys(url)
+        const anyBuffer = await redisClient.hGet(commandOptions({ returnBuffers: true }), url, cachedExtList[0]) as Buffer
+
+        buffer = await imageConvertFileType(anyBuffer, ext)
+        await redisClient.hSet(url, ext, buffer)
+      }
+    } else {
+      /**
+       * fetch image buffer
+       */
+      const response = await axios.get(url, { responseType: 'arraybuffer' })
+
+      if (!response.headers['content-type'].includes('image')) {
+        return res
+          .status(400)
+          .send({ message: 'content-type of url response is not image/*' })
+      }
+
+      // if image is svg type, just return to client
+      if (response.headers['content-type'].includes('image/svg+xml')) {
+        res.setHeader('content-type', 'image/svg+xml')
+        return res.send(response.data)
+      }
+
+      buffer = response.data as Buffer
+
+      await redisClient.hSet(url, ext, buffer)
     }
 
     /**
-     * modify image file
+     * resizing image
      */
-    const modifiedImage = await sharp(response.data)[ext]()
-
     if (width !== undefined || height !== undefined || fit !== undefined) {
-      modifiedImage.resize({
-        width,
-        height,
-        fit,
-        background: { r: 255, g: 255, b: 255, alpha: 0 }
-      })
+      buffer = await imageResize(buffer, { width, height, fit })
     }
-
-    const buffer = await modifiedImage.toBuffer()
 
     /**
      * send response
      */
     res.setHeader('content-type', `image/${ext}`)
-    res.send(buffer)
+    return res.send(buffer)
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log(error.message)
-      res.status(400).send({ message: `cannot fetch data from ${url}` })
-      return
+      return res.status(400).send({ message: `cannot fetch data from ${url}` })
     }
 
     console.log(error)
-    res.status(500).send({ message: 'Server Error' })
+    return res.status(500).send({ message: 'Server Error' })
   }
 }
