@@ -25,8 +25,8 @@ const get = async (req: Request, res: Response): Promise<Response> => {
         // redis db have exactly type buffer
         buffer = cachedBuffer
       } else {
-        // redis db do not have specify type buffer.
-        // use any other buffer to convert to specify type
+        // redis db do not have specific type buffer.
+        // use any other buffer to convert to specific type
         const cachedExtList = await redisClient.hKeys(url)
         const anyBuffer = await redisClient.hGet(commandOptions({ returnBuffers: true }), url, cachedExtList[0]) as Buffer
 
@@ -79,6 +79,20 @@ const get = async (req: Request, res: Response): Promise<Response> => {
   }
 }
 
+const clearCache = async (req: Request, res: Response): Promise<Response> => {
+  try {
+    const { url } = req.query as { url: string }
+
+    const { keys } = await redisClient.scan(0, { MATCH: `${url}*` })
+    await redisClient.unlink(keys)
+
+    return res.status(200).send({ message: 'OK' })
+  } catch (error) {
+    return res.status(500).send({ message: 'server error' })
+  }
+}
+
 export default {
-  get
+  get,
+  clearCache
 }

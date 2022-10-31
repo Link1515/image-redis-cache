@@ -66,8 +66,21 @@ const router = Router()
  *                  message:
  *                    type: string
  *                    description: error message
+ *    delete:
+ *      description: Clear cache from specific url. You can provide a full path for a single file, like https://example.com/image.jpg. It will clear single image file cache. Or, you can also offer a path to your image directory, like https://example.com/images. It will clear all image cache under the directory.
+ *      tags:
+ *        - Image
+ *      parameters:
+ *        - name: url
+ *          description: url of image file path or url of image directory
+ *          in: query
+ *          schema:
+ *            type: string
+ *          required: true
+ *          example: https://example.com/image.jpg
  */
 
 router.get('/', checkQueryUrl, checkQueryImageProps, imageController.get)
+router.delete('/', checkQueryUrl, imageController.clearCache)
 
 export default router
