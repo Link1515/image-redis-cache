@@ -15,9 +15,9 @@ export const logger = createLogger({
       }
 
       let restString = JSON.stringify(rest, undefined, 2)
-      restString = restString === '{}' ? '' : restString
+      restString = restString === '{}' ? '' : `\n${restString}\n`
 
-      return `[${timestamp}] ${level} - ${message} \n${restString}\n`
+      return `[${timestamp}] ${level} - ${message} ${restString}`
     })
   ),
   transports: [new transports.Console()]
