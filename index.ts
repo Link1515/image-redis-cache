@@ -1,6 +1,7 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import compression from 'compression'
+import { logger } from './utils'
 
 // routes
 import docs from './routes/docs.route'
@@ -22,7 +23,7 @@ app.all('*', (req, res) => {
 })
 
 app.listen(process.env.PORT, () => {
-  console.log(
+  logger.info(
     `server running at: http://localhost:${process.env.PORT as string}`
   )
 })

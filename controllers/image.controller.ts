@@ -3,7 +3,7 @@ import type { Request, Response } from 'express'
 import type { ImageQueries } from '../types'
 import { commandOptions } from 'redis'
 import { client as redisClient } from '../redis-client'
-import { imageConvertFileType, imageResize } from '../utils/imageModify'
+import { imageConvertFileType, imageResize } from '../utils'
 
 const get = async (req: Request, res: Response): Promise<Response> => {
   const { url, ext, width, height, fit } = req.query as unknown as ImageQueries
@@ -19,7 +19,11 @@ const get = async (req: Request, res: Response): Promise<Response> => {
       /**
        * get image buffer from redis db
        */
-      const cachedBuffer = await redisClient.hGet(commandOptions({ returnBuffers: true }), url, ext)
+      const cachedBuffer = await redisClient.hGet(
+        commandOptions({ returnBuffers: true }),
+        url,
+        ext
+      )
 
       if (cachedBuffer != null) {
         // redis db have exactly type buffer
@@ -28,7 +32,11 @@ const get = async (req: Request, res: Response): Promise<Response> => {
         // redis db do not have specific type buffer.
         // use any other buffer to convert to specific type
         const cachedExtList = await redisClient.hKeys(url)
-        const anyBuffer = await redisClient.hGet(commandOptions({ returnBuffers: true }), url, cachedExtList[0]) as Buffer
+        const anyBuffer = (await redisClient.hGet(
+          commandOptions({ returnBuffers: true }),
+          url,
+          cachedExtList[0]
+        )) as Buffer
 
         buffer = await imageConvertFileType(anyBuffer, ext)
         await redisClient.hSet(url, ext, buffer)
