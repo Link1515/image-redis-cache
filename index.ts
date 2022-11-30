@@ -8,7 +8,7 @@ import docs from './routes/docs.route'
 import image from './routes/image.route'
 
 // set env
-const currentEnv = process.env.NODE_ENV?.trim() ?? 'development'
+const currentEnv = process.env.NODE_ENV ?? 'development'
 dotenv.config({ path: `./.env.${currentEnv}` })
 
 const app = express()
