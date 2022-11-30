@@ -3,7 +3,7 @@ import type { Request, Response } from 'express'
 import type { ImageQueries } from '../types'
 import { commandOptions } from 'redis'
 import { client as redisClient } from '../redis-client'
-import { imageConvertFileType, imageResize } from '../utils'
+import { imageConvertFileType, imageResize, logger } from '../utils'
 
 const get = async (req: Request, res: Response): Promise<Response> => {
   const { url, ext, width, height, fit } = req.query as unknown as ImageQueries
@@ -78,11 +78,11 @@ const get = async (req: Request, res: Response): Promise<Response> => {
     return res.send(buffer)
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.log(error.message)
+      logger.error(error.message)
       return res.status(400).send({ message: `cannot fetch data from ${url}` })
     }
 
-    console.log(error)
+    logger.error('server error', error)
     return res.status(500).send({ message: 'Server Error' })
   }
 }
@@ -96,6 +96,7 @@ const clearCache = async (req: Request, res: Response): Promise<Response> => {
 
     return res.status(200).send({ message: 'OK' })
   } catch (error) {
+    logger.error('server error', error)
     return res.status(500).send({ message: 'server error' })
   }
 }
