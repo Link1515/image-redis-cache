@@ -86,7 +86,7 @@ router.get(
   '/',
   urlRequireRequestValidator,
   imageRequestValidator,
-  imageController.get
+  imageController.handleImage
 )
 router.delete('/', urlRequireRequestValidator, imageController.clearCache)
 

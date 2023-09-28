@@ -6,7 +6,7 @@ import { imageConvertFileType, imageResize, logger } from '../utils'
 import { Ext, Fit } from '../types'
 import { validationResult, matchedData } from 'express-validator'
 
-const get = async (req: Request, res: Response): Promise<Response> => {
+const handleImage = async (req: Request, res: Response): Promise<Response> => {
   const result = validationResult(req)
 
   if (!result.isEmpty()) {
@@ -123,6 +123,6 @@ const clearCache = async (req: Request, res: Response): Promise<Response> => {
 }
 
 export default {
-  get,
+  handleImage,
   clearCache
 }
