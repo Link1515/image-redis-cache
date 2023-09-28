@@ -1,15 +1,12 @@
 import express from 'express'
-import dotenv from 'dotenv'
+import 'dotenv/config'
 import compression from 'compression'
 import { logger } from './utils'
+import './redis-client'
 
 // routes
 import docs from './routes/docs.route'
 import image from './routes/image.route'
-
-// set env
-const currentEnv = process.env.NODE_ENV ?? 'development'
-dotenv.config({ path: `./.env.${currentEnv}` })
 
 const app = express()
 

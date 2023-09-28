@@ -1,0 +1,22 @@
+services:
+  app:
+    container_name: pgw-app
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile
+    image: pgw-app
+    ports:
+      - '3031:3031'
+    working_dir: /app
+    volumes:
+      - ../logs:/app/logs
+    #   - ../:/app
+  redis:
+    container_name: pgw-redis
+    image: redis:6.2.13
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+    volumes:
+      - ./redis/data:/data

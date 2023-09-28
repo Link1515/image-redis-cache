@@ -2,7 +2,8 @@ import { createClient } from 'redis'
 import { logger } from './utils'
 
 export const client = createClient({
-  url: process.env.REDIS_CLIENT_URL
+  url: process.env.REDIS_CLIENT_URL,
+  password: process.env.REDIS_PASSWORD
 })
 
 client.on('error', err => {

@@ -33,7 +33,7 @@ logger.add(
 if (process.env.NODE_ENV === 'production') {
   logger.add(
     new transports.File({
-      filename: 'error.log',
+      filename: 'logs/error.log',
       level: 'error',
       format: json()
     })
@@ -41,7 +41,7 @@ if (process.env.NODE_ENV === 'production') {
 
   logger.add(
     new transports.File({
-      filename: 'all.log',
+      filename: 'logs/all.log',
       format: json()
     })
   )
