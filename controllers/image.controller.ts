@@ -1,12 +1,25 @@
 import axios from 'axios'
 import type { Request, Response } from 'express'
-import type { ImageQueries } from '../types'
 import { commandOptions } from 'redis'
 import { client as redisClient } from '../redis-client'
 import { imageConvertFileType, imageResize, logger } from '../utils'
+import { Ext, Fit } from '../types'
+import { validationResult, matchedData } from 'express-validator'
 
 const get = async (req: Request, res: Response): Promise<Response> => {
-  const { url, ext, width, height, fit } = req.query as unknown as ImageQueries
+  const result = validationResult(req)
+
+  if (!result.isEmpty()) {
+    return res.send(result.mapped())
+  }
+
+  const data = matchedData(req)
+
+  const url = data.url as string
+  const ext = data.ext as Ext
+  const w = data.w as number
+  const h = data.h as number
+  const fit = data.fit as Fit
 
   try {
     /**
@@ -67,8 +80,8 @@ const get = async (req: Request, res: Response): Promise<Response> => {
     /**
      * resizing image
      */
-    if (width !== undefined || height !== undefined || fit !== undefined) {
-      buffer = await imageResize(buffer, { width, height, fit })
+    if (w !== undefined || h !== undefined || fit !== undefined) {
+      buffer = await imageResize(buffer, { width: w, height: h, fit })
     }
 
     /**
@@ -89,7 +102,15 @@ const get = async (req: Request, res: Response): Promise<Response> => {
 
 const clearCache = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const { url } = req.query as { url: string }
+    const result = validationResult(req)
+
+    if (!result.isEmpty()) {
+      return res.send(result.mapped())
+    }
+
+    const data = matchedData(req)
+
+    const url = data.url as string
 
     const { keys } = await redisClient.scan(0, { MATCH: `${url}*` })
     await redisClient.unlink(keys)

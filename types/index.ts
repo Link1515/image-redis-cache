@@ -9,11 +9,3 @@ export interface ImageResizeProperty {
   height: number | undefined
   fit: Fit
 }
-
-export interface ImageQueries {
-  url: string
-  ext: Exclude<Ext, 'jpg'>
-  width: number | undefined
-  height: number | undefined
-  fit: Fit
-}

@@ -8,9 +8,7 @@ RUN apt-get update && apt-get install -y \
 
 COPY package.json package-lock.json ./
 
-RUN npm i --platform=linuxmusl
-
-RUN npm i --platform=linux --arch=x64 sharp
+RUN npm i
 
 COPY . . 
 

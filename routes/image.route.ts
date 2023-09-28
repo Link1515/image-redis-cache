@@ -1,7 +1,9 @@
 import { Router } from 'express'
 import imageController from '../controllers/image.controller'
-import checkQueryImageProps from '../middleware/checkQueryImageProps.middleware'
-import checkQueryUrl from '../middleware/checkQueryUrl.middleware'
+import {
+  imageRequestValidator,
+  urlRequireRequestValidator
+} from '../requestValidator'
 
 const router = Router()
 
@@ -80,7 +82,12 @@ const router = Router()
  *          example: https://example.com/image.jpg
  */
 
-router.get('/', checkQueryUrl, checkQueryImageProps, imageController.get)
-router.delete('/', checkQueryUrl, imageController.clearCache)
+router.get(
+  '/',
+  urlRequireRequestValidator,
+  imageRequestValidator,
+  imageController.get
+)
+router.delete('/', urlRequireRequestValidator, imageController.clearCache)
 
 export default router
