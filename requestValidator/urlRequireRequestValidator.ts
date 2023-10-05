@@ -9,6 +9,13 @@ export const urlRequireRequestValidator = checkSchema(
       },
       notEmpty: {
         errorMessage: 'url is required, but get an empty string'
+      },
+      custom: {
+        errorMessage: 'url can only be in the udn domain',
+        options: value => {
+          const udnDomainRegex = /https:\/\/(.*\.)?udn\.com.*/
+          return udnDomainRegex.test(value)
+        }
       }
     }
   },
