@@ -10,6 +10,9 @@ export const imageRequestValidator = checkSchema(
         options: [['jpg', 'jpeg', 'png', 'gif', 'webp', 'avif']],
         errorMessage:
           "ext can only be one of 'avif', 'webp', 'jpg', 'jpeg', 'png', 'gif'. Default is 'avif'."
+      },
+      customSanitizer: {
+        options: value => (value === 'jpg' ? 'jpeg' : value)
       }
     },
     fit: {

@@ -1,80 +1,83 @@
 import axios from 'axios'
 import type { Request, Response } from 'express'
+import { validationResult, matchedData } from 'express-validator'
 import { commandOptions } from 'redis'
 import { client as redisClient } from '../redis-client'
 import { imageConvertFileType, imageResize, logger } from '../utils'
 import { Ext, Fit } from '../types'
-import { validationResult, matchedData } from 'express-validator'
 
 const handleImage = async (req: Request, res: Response): Promise<Response> => {
   const result = validationResult(req)
 
   if (!result.isEmpty()) {
-    return res.send(result.mapped())
+    return res.status(400).send({
+      message: 'parameter error',
+      parameterErrorMap: result.mapped()
+    })
   }
 
   const data = matchedData(req)
 
-  const url = data.url as string
-  const ext = data.ext as Ext
-  const w = data.w as number
-  const h = data.h as number
-  const fit = data.fit as Fit
+  const url: string = data.url
+  const ext: Ext = data.ext
+  const w: number = data.w
+  const h: number = data.h
+  const fit: Fit = data.fit
 
   try {
     /**
-     * check if url in the redis db
+     * check if request url (as its key) in the redis db
      */
-    const urlIsCached = Boolean(await redisClient.exists(url))
-    let buffer: Buffer
+    const urlIsCached = Boolean(await redisClient.exists(req.url))
 
     if (urlIsCached) {
       /**
        * get image buffer from redis db
        */
-      const cachedBuffer = await redisClient.hGet(
+      const cachedBuffer = await redisClient.get(
         commandOptions({ returnBuffers: true }),
-        url,
-        ext
+        req.url
       )
 
-      if (cachedBuffer != null) {
-        // redis db have exactly type buffer
-        buffer = cachedBuffer
-      } else {
-        // redis db do not have specific type buffer.
-        // use any other buffer to convert to specific type
-        const cachedExtList = await redisClient.hKeys(url)
-        const anyBuffer = (await redisClient.hGet(
-          commandOptions({ returnBuffers: true }),
-          url,
-          cachedExtList[0]
-        )) as Buffer
-
-        buffer = await imageConvertFileType(anyBuffer, ext)
-        await redisClient.hSet(url, ext, buffer)
+      if (cachedBuffer !== null) {
+        res.setHeader('content-type', `image/${ext}`)
+        return res.send(cachedBuffer)
       }
-    } else {
-      /**
-       * fetch image buffer
-       */
-      const response = await axios.get(url, { responseType: 'arraybuffer' })
+    }
 
-      if (!response.headers['content-type'].includes('image')) {
-        return res.status(400).send({
-          message: 'content-type of url response is not image/*'
-        })
-      }
+    /**
+     * fetch image buffer
+     */
+    const response = await axios.get(url, { responseType: 'arraybuffer' })
 
-      // if image is svg type, just return to client
-      if (response.headers['content-type'].includes('image/svg+xml')) {
-        res.setHeader('content-type', 'image/svg+xml')
-        return res.send(response.data)
-      }
+    if (!response.headers['content-type'].includes('image')) {
+      return res.status(400).send({
+        message: 'content-type of url response is not image/*'
+      })
+    }
 
-      buffer = response.data as Buffer
+    // if image is svg type, just return to client
+    if (response.headers['content-type'].includes('image/svg+xml')) {
+      res.setHeader('content-type', 'image/svg+xml')
+      return res.send(response.data)
+    }
 
-      await redisClient.hSet(url, ext, buffer)
+    let buffer = response.data as Buffer
+
+    const IMAGE_CACHE_MINUTE = process.env.IMAGE_CACHE_MINUTE
+    let expiredTime = 60 * 60 * 24 // default cache one day
+
+    if (IMAGE_CACHE_MINUTE !== undefined && IMAGE_CACHE_MINUTE !== '') {
+      expiredTime = parseInt(IMAGE_CACHE_MINUTE) * 60
+    }
+
+    await redisClient.setEx(req.url, expiredTime, buffer)
+
+    /**
+     * convert file type
+     */
+    if (ext !== undefined) {
+      buffer = await imageConvertFileType(buffer, ext)
     }
 
     /**
@@ -105,7 +108,10 @@ const clearCache = async (req: Request, res: Response): Promise<Response> => {
     const result = validationResult(req)
 
     if (!result.isEmpty()) {
-      return res.send(result.mapped())
+      return res.status(400).send({
+        message: 'parameter error',
+        parameterErrorMap: result.mapped()
+      })
     }
 
     const data = matchedData(req)

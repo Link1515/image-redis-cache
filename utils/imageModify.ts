@@ -5,8 +5,6 @@ export const imageConvertFileType = async (
   buffer: Buffer,
   ext: Ext
 ): Promise<Buffer> => {
-  if (ext === 'jpg') ext = 'jpeg'
-
   const sharpObj = await sharp(buffer)[ext]()
   const newBuffer = await sharpObj.toBuffer()
 
