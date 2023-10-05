@@ -1,0 +1,31 @@
+clone:
+  git:
+    image: plugins/git
+    depath: 50
+    tags: true
+
+workspace:
+  base: /local
+  path: /${DRONE_REPO}
+
+pipeline:
+  deploy-to-demo-site:
+    image: appleboy/drone-ssh
+    host: 192.168.15.43
+    username: tadmin
+    secrets:
+      - source: ssh_key
+        target: ssh_key
+    post: 22
+    command_timeout: 3600
+    script:
+      - cd /local/htdocs/pgw-frontendTeam
+      - git pull origin master
+      - nvm use 16.13.2
+      - npm i
+      - npm run build
+      - pm2 restart pgw-frontendTeam
+    when:
+      branch:
+        include: [master]
+        exclude: [refs/tags/v*]
