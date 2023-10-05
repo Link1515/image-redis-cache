@@ -3,7 +3,7 @@ import imageController from '../controllers/image.controller'
 import {
   imageRequestValidator,
   urlRequireRequestValidator
-} from '../requestValidator'
+} from '../requestValidator/index'
 
 const router = Router()
 

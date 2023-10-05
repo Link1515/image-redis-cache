@@ -1,8 +1,7 @@
 import express from 'express'
 import 'dotenv/config'
 import compression from 'compression'
-import { logger } from './utils'
-import './redis-client'
+import { logger } from './utils/index'
 
 // routes
 import docs from './routes/docs.route'

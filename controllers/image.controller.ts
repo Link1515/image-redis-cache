@@ -1,7 +1,7 @@
 import axios from 'axios'
 import type { Request, Response } from 'express'
 import { validationResult, matchedData } from 'express-validator'
-import { logger } from '../utils'
+import { logger } from '../utils/index'
 import {
   imageConvertFileType,
   imageResize,
