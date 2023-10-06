@@ -23,11 +23,11 @@ export const setImageBufferToCache = async (
   imageQueryParams: ImageQueryParams,
   buffer: Buffer
 ): Promise<void> => {
-  const IMAGE_CACHE_MINUTE = process.env.IMAGE_CACHE_MINUTE
-  let expiredTime = 60 * 60 * 24 // default cache one day
+  const IMAGE_CACHE_SECOND = process.env.IMAGE_CACHE_SECOND
+  let expiredTime = 60 * 60 * 24 * 7 // default cache one week
 
-  if (IMAGE_CACHE_MINUTE !== undefined && IMAGE_CACHE_MINUTE !== '') {
-    expiredTime = parseInt(IMAGE_CACHE_MINUTE) * 60
+  if (IMAGE_CACHE_SECOND !== undefined && IMAGE_CACHE_SECOND !== '') {
+    expiredTime = parseInt(IMAGE_CACHE_SECOND)
   }
 
   await redisClient.setEx(formatCacheKey(imageQueryParams), expiredTime, buffer)
