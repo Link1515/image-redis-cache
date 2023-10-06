@@ -1,5 +1,6 @@
 import sharp from 'sharp'
 import { commandOptions } from 'redis'
+import parseDuration from 'parse-duration'
 import { client as redisClient } from '../redis-client'
 import type { Ext, ImageQueryParams, ImageResizeProperty } from '../types'
 
@@ -25,11 +26,16 @@ export const setImageBufferToCache = async (
   imageQueryParams: ImageQueryParams,
   buffer: Buffer
 ): Promise<void> => {
-  const IMAGE_CACHE_SECOND = process.env.IMAGE_CACHE_SECOND
-  let expiredTime = 60 * 60 * 24 * 7 // default cache one week
+  const IMAGE_CACHE_DURATION = process.env.IMAGE_CACHE_DURATION
+  let expiredTime
 
-  if (IMAGE_CACHE_SECOND !== undefined && IMAGE_CACHE_SECOND !== '') {
-    expiredTime = parseInt(IMAGE_CACHE_SECOND)
+  if (IMAGE_CACHE_DURATION !== undefined && IMAGE_CACHE_DURATION !== '') {
+    expiredTime = parseDuration(IMAGE_CACHE_DURATION, 's')
+    console.log(expiredTime)
+  }
+
+  if (expiredTime === undefined) {
+    expiredTime = parseDuration('7d', 's') ?? 60 * 60 * 24 * 7 // default cache one week
   }
 
   await redisClient.setEx(formatCacheKey(imageQueryParams), expiredTime, buffer)
