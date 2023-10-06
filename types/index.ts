@@ -10,6 +10,7 @@ export interface ImageResizeProperty {
 
 export interface ImageQueryParams {
   url: string
+  cacheId: string
   fit: Fit
   ext: Ext
   w?: number

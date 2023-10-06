@@ -38,6 +38,11 @@ export const imageRequestValidator = checkSchema(
         errorMessage: 'w must be Numeric'
       },
       toInt: true
+    },
+    cacheId: {
+      default: {
+        options: 'default'
+      }
     }
   },
   ['query']

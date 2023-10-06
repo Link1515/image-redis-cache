@@ -4,8 +4,10 @@ import { client as redisClient } from '../redis-client'
 import type { Ext, ImageQueryParams, ImageResizeProperty } from '../types'
 
 const formatCacheKey = (imageQueryParams: ImageQueryParams): string => {
-  const { url, ext, w, h, fit } = imageQueryParams
-  return `${url}&ext=${ext}&w=${w ?? 'auto'}&h=${h ?? 'auto'}&fit=${fit}`
+  const { url, cacheId, ext, w, h, fit } = imageQueryParams
+  return `${url}&cacheId=${cacheId}&ext=${ext}&w=${w ?? 'auto'}&h=${
+    h ?? 'auto'
+  }&fit=${fit}`
 }
 
 export const getImageBufferFromCache = async (
