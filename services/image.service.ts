@@ -1,21 +1,26 @@
 import sharp from 'sharp'
 import { commandOptions } from 'redis'
 import { client as redisClient } from '../redis-client'
-import type { Ext, ImageResizeProperty } from '../types'
+import type { Ext, ImageQueryParams, ImageResizeProperty } from '../types'
+
+const formatCacheKey = (imageQueryParams: ImageQueryParams): string => {
+  const { url, ext, w, h, fit } = imageQueryParams
+  return `${url}&ext=${ext}&w=${w ?? 'auto'}&h=${h ?? 'auto'}&fit=${fit}`
+}
 
 export const getImageBufferFromCache = async (
-  key: string
+  imageQueryParams: ImageQueryParams
 ): Promise<Buffer | null> => {
   const cachedBuffer = await redisClient.get(
     commandOptions({ returnBuffers: true }),
-    key
+    formatCacheKey(imageQueryParams)
   )
 
   return cachedBuffer
 }
 
 export const setImageBufferToCache = async (
-  key: string,
+  imageQueryParams: ImageQueryParams,
   buffer: Buffer
 ): Promise<void> => {
   const IMAGE_CACHE_MINUTE = process.env.IMAGE_CACHE_MINUTE
@@ -25,7 +30,7 @@ export const setImageBufferToCache = async (
     expiredTime = parseInt(IMAGE_CACHE_MINUTE) * 60
   }
 
-  await redisClient.setEx(key, expiredTime, buffer)
+  await redisClient.setEx(formatCacheKey(imageQueryParams), expiredTime, buffer)
 }
 
 export const clearImageCache = async (keyPattern: string): Promise<void> => {

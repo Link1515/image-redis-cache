@@ -9,7 +9,7 @@ import {
   setImageBufferToCache,
   clearImageCache
 } from '../services/image.service'
-import { Ext, Fit } from '../types'
+import { ImageQueryParams } from '../types'
 
 const handleImage = async (req: Request, res: Response): Promise<Response> => {
   const result = validationResult(req)
@@ -21,21 +21,14 @@ const handleImage = async (req: Request, res: Response): Promise<Response> => {
     })
   }
 
-  const data = matchedData(req)
-
-  const url: string = data.url
-  const ext: Ext = data.ext
-  const w: number = data.w
-  const h: number = data.h
-  const fit: Fit = data.fit
-
-  const cacheKey = req.url.replace('/?url=', '')
+  const imageQueryParams = matchedData(req) as ImageQueryParams
+  const { url, ext, w, h, fit } = imageQueryParams
 
   try {
     /**
      * get image buffer from cache
      */
-    const cachedBuffer = await getImageBufferFromCache(cacheKey)
+    const cachedBuffer = await getImageBufferFromCache(imageQueryParams)
     if (cachedBuffer !== null) {
       res.setHeader('content-type', `image/${ext}`)
       return res.send(cachedBuffer)
@@ -61,11 +54,6 @@ const handleImage = async (req: Request, res: Response): Promise<Response> => {
     let buffer = imageResponse.data as Buffer
 
     /**
-     * set image buffer to cache
-     */
-    await setImageBufferToCache(cacheKey, buffer)
-
-    /**
      * convert file type
      */
     if (ext !== undefined) {
@@ -78,6 +66,11 @@ const handleImage = async (req: Request, res: Response): Promise<Response> => {
     if (w !== undefined || h !== undefined || fit !== undefined) {
       buffer = await imageResize(buffer, { width: w, height: h, fit })
     }
+
+    /**
+     * set image buffer to cache
+     */
+    await setImageBufferToCache(imageQueryParams, buffer)
 
     res.setHeader('content-type', `image/${ext}`)
     return res.send(buffer)
@@ -103,9 +96,9 @@ const clearCache = async (req: Request, res: Response): Promise<Response> => {
       })
     }
 
-    const cacheKey = req.url.replace('/?url=', '')
+    const url = matchedData(req).url as string
 
-    await clearImageCache(cacheKey)
+    await clearImageCache(url)
 
     return res.status(200).send({ message: 'OK' })
   } catch (error) {
