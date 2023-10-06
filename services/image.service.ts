@@ -35,9 +35,11 @@ export const setImageBufferToCache = async (
   await redisClient.setEx(formatCacheKey(imageQueryParams), expiredTime, buffer)
 }
 
-export const clearImageCache = async (keyPattern: string): Promise<void> => {
-  const { keys } = await redisClient.scan(0, { MATCH: `${keyPattern}*` })
-  await redisClient.unlink(keys)
+export const clearImageCache = async (
+  imageQueryParams: ImageQueryParams
+): Promise<void> => {
+  // const { keys } = await redisClient.scan(0, { MATCH: `${keyPattern}*` })
+  await redisClient.unlink(formatCacheKey(imageQueryParams))
 }
 
 export const imageConvertFileType = async (

@@ -96,9 +96,9 @@ const clearCache = async (req: Request, res: Response): Promise<Response> => {
       })
     }
 
-    const url = matchedData(req).url as string
+    const imageQueryParams = matchedData(req) as ImageQueryParams
 
-    await clearImageCache(url)
+    await clearImageCache(imageQueryParams)
 
     return res.status(200).send({ message: 'OK' })
   } catch (error) {
