@@ -29,11 +29,13 @@ const handleImage = async (req: Request, res: Response): Promise<Response> => {
   const h: number = data.h
   const fit: Fit = data.fit
 
+  const cacheKey = req.url.replace('/?url=', '')
+
   try {
     /**
      * get image buffer from cache
      */
-    const cachedBuffer = await getImageBufferFromCache(req.url)
+    const cachedBuffer = await getImageBufferFromCache(cacheKey)
     if (cachedBuffer !== null) {
       res.setHeader('content-type', `image/${ext}`)
       return res.send(cachedBuffer)
@@ -61,7 +63,7 @@ const handleImage = async (req: Request, res: Response): Promise<Response> => {
     /**
      * set image buffer to cache
      */
-    await setImageBufferToCache(req.url, buffer)
+    await setImageBufferToCache(cacheKey, buffer)
 
     /**
      * convert file type
@@ -101,7 +103,9 @@ const clearCache = async (req: Request, res: Response): Promise<Response> => {
       })
     }
 
-    await clearImageCache(req.url)
+    const cacheKey = req.url.replace('/?url=', '')
+
+    await clearImageCache(cacheKey)
 
     return res.status(200).send({ message: 'OK' })
   } catch (error) {

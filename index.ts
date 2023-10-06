@@ -19,7 +19,5 @@ app.all('*', (req, res) => {
 })
 
 app.listen(process.env.PORT, () => {
-  logger.info(
-    `server running at: http://localhost:${process.env.PORT as string}`
-  )
+  logger.info('pgw server started')
 })
