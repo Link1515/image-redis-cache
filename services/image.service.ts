@@ -42,9 +42,9 @@ export const setImageBufferToCache = async (
 
 export const clearImageCache = async (
   imageQueryParams: ImageQueryParams
-): Promise<void> => {
+): Promise<number> => {
   // const { keys } = await redisClient.scan(0, { MATCH: `${keyPattern}*` })
-  await redisClient.unlink(formatCacheKey(imageQueryParams))
+  return await redisClient.unlink(formatCacheKey(imageQueryParams))
 }
 
 export const imageConvertFileType = async (

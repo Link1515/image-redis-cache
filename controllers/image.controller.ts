@@ -98,9 +98,11 @@ const clearCache = async (req: Request, res: Response): Promise<Response> => {
 
     const imageQueryParams = matchedData(req) as ImageQueryParams
 
-    await clearImageCache(imageQueryParams)
+    const unlinkCount = await clearImageCache(imageQueryParams)
 
-    return res.status(200).send({ message: 'OK' })
+    return unlinkCount > 0
+      ? res.status(200).send({ message: 'OK' })
+      : res.status(404).send({ message: 'not found' })
   } catch (error) {
     logger.error('server error', error)
     return res.status(500).send({ message: 'server error' })
