@@ -31,7 +31,6 @@ export const setImageBufferToCache = async (
 
   if (IMAGE_CACHE_DURATION !== undefined && IMAGE_CACHE_DURATION !== '') {
     expiredTime = parseDuration(IMAGE_CACHE_DURATION, 's')
-    console.log(expiredTime)
   }
 
   if (expiredTime === undefined) {
