@@ -5,7 +5,6 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "start": "npm run build && cross-env NODE_ENV=production node ./dist/index.js",
     "dev": "cross-env NODE_ENV=development concurrently -c gray npm:watch-ts npm:run-server:dev ",
     "run-server:dev": "nodemon --es-module-specifier-resolution=node dist/index.js",
     "watch-ts": "tsc --watch",
