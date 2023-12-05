@@ -11,4 +11,8 @@ client.on('error', err => {
   process.exit(1)
 })
 
-await client.connect()
+const clientConnect = async () => {
+  await client.connect()
+}
+
+clientConnect()
