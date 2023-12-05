@@ -98,7 +98,6 @@ const router = Router()
  *          schema:
  *            type: string
  *            enum: [avif, webp, jpg, jpeg, png, gif]
- *          default: avif
  *        - name: w
  *          description: resize width
  *          in: query
