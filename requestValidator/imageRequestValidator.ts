@@ -12,7 +12,7 @@ export const imageRequestValidator = checkSchema(
       },
       custom: {
         errorMessage: 'url can only be in the udn domain',
-        options: value => {
+        options: (value: string) => {
           const udnDomainRegex = /https:\/\/(.*\.)?udn\.com.*/
           return udnDomainRegex.test(value)
         }
@@ -23,10 +23,10 @@ export const imageRequestValidator = checkSchema(
       isIn: {
         options: [['jpg', 'jpeg', 'png', 'gif', 'webp', 'avif']],
         errorMessage:
-          "ext can only be one of 'avif', 'webp', 'jpg', 'jpeg', 'png', 'gif'. Default is 'avif'."
+          "ext can only be one of 'avif', 'webp', 'jpg', 'jpeg', 'png', 'gif'."
       },
       customSanitizer: {
-        options: value => (value === 'jpg' ? 'jpeg' : value)
+        options: (value: string) => (value === 'jpg' ? 'jpeg' : value)
       }
     },
     fit: {

@@ -40,7 +40,7 @@ const handleImage = async (req: Request, res: Response): Promise<Response> => {
      */
     const cachedBuffer = await getImageBufferFromCache(imageQueryParams)
     if (cachedBuffer !== null) {
-      res.setHeader('content-type', `image/${ext}`)
+      res.set('content-type', `image/${ext}`)
       return res.send(cachedBuffer)
     }
 
@@ -57,7 +57,7 @@ const handleImage = async (req: Request, res: Response): Promise<Response> => {
 
     // if image is svg type, just return to client
     if (imageResponse.headers['content-type'].includes('image/svg+xml')) {
-      res.setHeader('content-type', 'image/svg+xml')
+      res.set('content-type', 'image/svg+xml')
       return res.send(imageResponse.data)
     }
 
@@ -82,7 +82,7 @@ const handleImage = async (req: Request, res: Response): Promise<Response> => {
      */
     await setImageBufferToCache(imageQueryParams, buffer)
 
-    res.setHeader('content-type', `image/${ext}`)
+    res.set('content-type', `image/${ext}`)
     return res.send(buffer)
   } catch (error) {
     if (axios.isAxiosError(error)) {
