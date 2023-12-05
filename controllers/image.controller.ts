@@ -26,7 +26,7 @@ const handleImage = async (req: Request, res: Response): Promise<Response> => {
   const { url, w, h, fit } = imageQueryParams
   let { ext } = imageQueryParams
 
-  if (ext === undefined) {
+  if (!ext) {
     try {
       ext = getImageExtFromUrl(url)
     } catch (error) {
@@ -39,7 +39,7 @@ const handleImage = async (req: Request, res: Response): Promise<Response> => {
      * get image buffer from cache
      */
     const cachedBuffer = await getImageBufferFromCache(imageQueryParams)
-    if (cachedBuffer !== null) {
+    if (cachedBuffer) {
       res.set('content-type', `image/${ext}`)
       return res.send(cachedBuffer)
     }
@@ -66,14 +66,14 @@ const handleImage = async (req: Request, res: Response): Promise<Response> => {
     /**
      * convert file type
      */
-    if (ext !== undefined) {
+    if (ext) {
       buffer = await imageConvertFileType(buffer, ext)
     }
 
     /**
      * resizing image
      */
-    if (w !== undefined || h !== undefined || fit !== undefined) {
+    if (w || h || fit) {
       buffer = await imageResize(buffer, { width: w, height: h, fit })
     }
 

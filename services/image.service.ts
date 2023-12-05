@@ -8,7 +8,7 @@ const formatCacheKey = (imageQueryParams: ImageQueryParams): string => {
   const { url, cacheId, ext, w, h, fit } = imageQueryParams
   return `${url}&cacheId=${cacheId}&w=${w ?? 'auto'}&h=${
     h ?? 'auto'
-  }&fit=${fit}${ext !== undefined ? `&ext=${ext}` : ''}`
+  }&fit=${fit}${ext ? `&ext=${ext}` : ''}`
 }
 
 export const getImageBufferFromCache = async (
@@ -29,11 +29,11 @@ export const setImageBufferToCache = async (
   const IMAGE_CACHE_DURATION = process.env.IMAGE_CACHE_DURATION
   let expiredTime
 
-  if (IMAGE_CACHE_DURATION !== undefined && IMAGE_CACHE_DURATION !== '') {
+  if (IMAGE_CACHE_DURATION) {
     expiredTime = parseDuration(IMAGE_CACHE_DURATION, 's')
   }
 
-  if (expiredTime === undefined) {
+  if (!expiredTime) {
     expiredTime = parseDuration('7d', 's') ?? 60 * 60 * 24 * 7 // default cache one week
   }
 
