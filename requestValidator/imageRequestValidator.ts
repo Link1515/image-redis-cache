@@ -19,9 +19,7 @@ export const imageRequestValidator = checkSchema(
       }
     },
     ext: {
-      default: {
-        options: 'avif'
-      },
+      optional: true,
       isIn: {
         options: [['jpg', 'jpeg', 'png', 'gif', 'webp', 'avif']],
         errorMessage:

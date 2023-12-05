@@ -12,7 +12,7 @@ export interface ImageQueryParams {
   url: string
   cacheId: string
   fit: Fit
-  ext: Ext
+  ext?: Ext
   w?: number
   h?: number
 }

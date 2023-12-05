@@ -6,9 +6,9 @@ import type { Ext, ImageQueryParams, ImageResizeProperty } from '../types'
 
 const formatCacheKey = (imageQueryParams: ImageQueryParams): string => {
   const { url, cacheId, ext, w, h, fit } = imageQueryParams
-  return `${url}&cacheId=${cacheId}&ext=${ext}&w=${w ?? 'auto'}&h=${
+  return `${url}&cacheId=${cacheId}&w=${w ?? 'auto'}&h=${
     h ?? 'auto'
-  }&fit=${fit}`
+  }&fit=${fit}${ext !== undefined ? `&ext=${ext}` : ''}`
 }
 
 export const getImageBufferFromCache = async (
@@ -73,4 +73,20 @@ export const imageResize = async (
     .toBuffer()
 
   return newBuffer
+}
+
+export const isValidExtension = (ext: string): ext is Ext => {
+  return ['jpeg', 'png', 'gif', 'webp', 'avif'].includes(ext)
+}
+
+export const getImageExtFromUrl = (url: string): Ext => {
+  let ext = url.match(/\.([^./?]+)($|\?)/)?.[1] ?? ''
+
+  if (ext === 'jpg') {
+    ext = 'jpeg'
+  }
+
+  if (!isValidExtension(ext)) throw new Error('invalid extension')
+
+  return ext
 }

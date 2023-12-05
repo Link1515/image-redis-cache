@@ -7,7 +7,8 @@ import {
   imageResize,
   getImageBufferFromCache,
   setImageBufferToCache,
-  clearImageCache
+  clearImageCache,
+  getImageExtFromUrl
 } from '../services/image.service'
 import { ImageQueryParams } from '../types'
 
@@ -22,7 +23,16 @@ const handleImage = async (req: Request, res: Response): Promise<Response> => {
   }
 
   const imageQueryParams = matchedData(req) as ImageQueryParams
-  const { url, ext, w, h, fit } = imageQueryParams
+  const { url, w, h, fit } = imageQueryParams
+  let { ext } = imageQueryParams
+
+  if (ext === undefined) {
+    try {
+      ext = getImageExtFromUrl(url)
+    } catch (error) {
+      return res.status(400).send({ message: 'Invalid file extension' })
+    }
+  }
 
   try {
     /**
