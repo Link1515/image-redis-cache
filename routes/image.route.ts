@@ -12,7 +12,7 @@ const router = Router()
 
 /**
  * @swagger
- *  /image:
+ *  /:
  *    get:
  *      description: Convert image format or resize image. *Svg will not be convert!
  *      tags:
@@ -39,7 +39,6 @@ const router = Router()
  *          schema:
  *            type: string
  *            enum: [avif, webp, jpg, jpeg, png, gif]
- *          default: avif
  *        - name: w
  *          description: resize width
  *          in: query

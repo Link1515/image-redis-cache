@@ -11,7 +11,7 @@ const app = express()
 
 app.use(compression())
 
-app.use('/image', image)
+app.use(image)
 app.use('/docs', docs)
 
 app.all('*', (req, res) => {
