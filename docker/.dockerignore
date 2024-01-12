@@ -1,4 +1,4 @@
 dist
 node_modules
 *.log
-test.txt
+.env

@@ -12,6 +12,8 @@ RUN npm i
 
 COPY . . 
 
+RUN mv .env.docker .env
+
 CMD npm start
 
-EXPOSE 3000
+EXPOSE 3031

@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon index.ts",
     "build": "cross-env NODE_ENV=production tsc",
-    "docker-compose": "docker compose -f ./docker/docker-compose.yml up -d --build"
+    "docker-compose": "docker compose -f ./docker/docker-compose.yml up -d --build",
+    "start": "tsc && cross-env NODE_ENV=production node dist/index.js"
   },
   "keywords": [],
   "author": "",
