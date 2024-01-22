@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'pgw-frontendTeam',
+      name: 'image-redis-cache',
       port: '3035',
       script: './dist/index.js',
       env: {
