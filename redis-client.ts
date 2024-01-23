@@ -3,6 +3,7 @@ import { logger } from './utils/index'
 
 export const client = createClient({
   url: process.env.REDIS_CLIENT_URL,
+  username: process.env.REDIS_USERNAME,
   password: process.env.REDIS_PASSWORD
 })
 
