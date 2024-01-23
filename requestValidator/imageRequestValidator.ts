@@ -13,7 +13,7 @@ export const imageRequestValidator = checkSchema(
         errorMessage: `\`url\` can only be in the ${process.env.IMAGE_ALLOWED_DOMAIN} domain`,
         options: (value: string) => {
           const domainRegex = new RegExp(
-            `https:\/\/(.*\.)?${process.env.IMAGE_ALLOWED_DOMAIN}.*`
+            `https?:\/\/(.*\.)?${process.env.IMAGE_ALLOWED_DOMAIN}.*`
           )
           return domainRegex.test(value)
         }
