@@ -14,19 +14,19 @@ const router = Router()
  * @swagger
  *  /:
  *    get:
- *      description: Convert image format or resize image. *Svg will not be convert!
+ *      description: Cache the target image. Images can also be converted and resized. *Svg will not be convert!
  *      tags:
  *        - Image
  *      parameters:
  *        - name: url
- *          description: image origin url
+ *          description: target image url
  *          in: query
  *          schema:
  *            type: string
  *          required: true
  *          example: https://example.com/image.jpg
  *        - name: cacheId
- *          description: An id to generate new redis cache key. Use it when you want to update cached image with the same parameters
+ *          description: An id use to create a new redis cache. Use it when you need to update cached image with the same parameters
  *          in: query
  *          schema:
  *            type: string
@@ -34,7 +34,7 @@ const router = Router()
  *          example: 20231011
  *        - name: ext
  *          description:
- *            File extension which you want to convert.
+ *            File extension which you want to convert
  *          in: query
  *          schema:
  *            type: string
@@ -77,14 +77,14 @@ const router = Router()
  *        - Image
  *      parameters:
  *        - name: url
- *          description: image origin url
+ *          description: target image url
  *          in: query
  *          schema:
  *            type: string
  *          required: true
  *          example: https://example.com/image.jpg
  *        - name: cacheId
- *          description: An id to generate new redis cache key. Use it when you want to update cached image with the same parameters
+ *          description: An id use to create a new redis cache. Use it when you need to update cached image with the same parameters
  *          in: query
  *          schema:
  *            type: string
@@ -92,7 +92,7 @@ const router = Router()
  *          example: 20231011
  *        - name: ext
  *          description:
- *            File extension which you want to convert.
+ *            File extension which you want to convert
  *          in: query
  *          schema:
  *            type: string
