@@ -45,14 +45,22 @@ export const imageRequestValidator = checkSchema(
       isNumeric: {
         errorMessage: '`w` must be a numeric value'
       },
-      toInt: true
+      toInt: true,
+      custom: {
+        errorMessage: '`w` must be positive',
+        options: (value: number) => value > 0
+      }
     },
     h: {
       optional: true,
       isNumeric: {
         errorMessage: '`h` must be a numeric value'
       },
-      toInt: true
+      toInt: true,
+      custom: {
+        errorMessage: '`h` must be positive',
+        options: (value: number) => value > 0
+      }
     },
     cacheId: {
       default: {
