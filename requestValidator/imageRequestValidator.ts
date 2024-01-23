@@ -4,14 +4,13 @@ export const imageRequestValidator = checkSchema(
   {
     url: {
       exists: {
-        errorMessage:
-          "url is required, i.e., query string must have 'url' parameter"
+        errorMessage: '`url` is required. Please set the url query string'
       },
       notEmpty: {
-        errorMessage: 'url is required, but get an empty string'
+        errorMessage: '`url` is required. Please set the url query string'
       },
       custom: {
-        errorMessage: `url can only be in the ${process.env.IMAGE_ALLOWED_DOMAIN} domain`,
+        errorMessage: `\`url\` can only be in the ${process.env.IMAGE_ALLOWED_DOMAIN} domain`,
         options: (value: string) => {
           const domainRegex = new RegExp(
             `https:\/\/(.*\.)?${process.env.IMAGE_ALLOWED_DOMAIN}.*`
@@ -25,7 +24,7 @@ export const imageRequestValidator = checkSchema(
       isIn: {
         options: [['jpg', 'jpeg', 'png', 'gif', 'webp', 'avif']],
         errorMessage:
-          "ext can only be one of 'avif', 'webp', 'jpg', 'jpeg', 'png', 'gif'."
+          "`ext` can only be one of 'avif', 'webp', 'jpg', 'jpeg', 'png', 'gif'."
       },
       customSanitizer: {
         options: (value: string) => (value === 'jpg' ? 'jpeg' : value)
@@ -38,20 +37,20 @@ export const imageRequestValidator = checkSchema(
       isIn: {
         options: [['cover', 'contain']],
         errorMessage:
-          "fit can only be 'cover' or 'contain'. Default is 'cover'."
+          "`fit` can only be 'cover' or 'contain'. The default value is 'cover'."
       }
     },
     w: {
       optional: true,
       isNumeric: {
-        errorMessage: 'w must be Numeric'
+        errorMessage: '`w` must be a numeric value'
       },
       toInt: true
     },
     h: {
       optional: true,
       isNumeric: {
-        errorMessage: 'w must be Numeric'
+        errorMessage: '`h` must be a numeric value'
       },
       toInt: true
     },
