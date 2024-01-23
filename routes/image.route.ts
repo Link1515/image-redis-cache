@@ -19,7 +19,7 @@ const router = Router()
  *        - Image
  *      parameters:
  *        - name: url
- *          description: image origin url in udn.com domain
+ *          description: image origin url
  *          in: query
  *          schema:
  *            type: string

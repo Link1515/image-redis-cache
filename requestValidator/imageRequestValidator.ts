@@ -11,10 +11,10 @@ export const imageRequestValidator = checkSchema(
         errorMessage: 'url is required, but get an empty string'
       },
       custom: {
-        errorMessage: 'url can only be in the udn domain',
+        errorMessage: 'url can only be in the lynkishere domain',
         options: (value: string) => {
-          const udnDomainRegex = /https:\/\/(.*\.)?udn\.com.*/
-          return udnDomainRegex.test(value)
+          const domainRegex = /https:\/\/(.*\.)?lynkishere\.com.*/
+          return domainRegex.test(value)
         }
       }
     },
