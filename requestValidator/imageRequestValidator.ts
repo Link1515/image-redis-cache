@@ -11,9 +11,11 @@ export const imageRequestValidator = checkSchema(
         errorMessage: 'url is required, but get an empty string'
       },
       custom: {
-        errorMessage: 'url can only be in the lynkishere domain',
+        errorMessage: `url can only be in the ${process.env.IMAGE_ALLOWED_DOMAIN} domain`,
         options: (value: string) => {
-          const domainRegex = /https:\/\/(.*\.)?lynkishere\.com.*/
+          const domainRegex = new RegExp(
+            `https:\/\/(.*\.)?${process.env.IMAGE_ALLOWED_DOMAIN}.*`
+          )
           return domainRegex.test(value)
         }
       }
