@@ -4,11 +4,23 @@ import parseDuration from 'parse-duration'
 import { client as redisClient } from '../redis-client'
 import type { Ext, ImageQueryParams, ImageResizeProperty } from '../types'
 
+const createOptionalQueryString = (
+  optionalParams: Record<string, string | number | undefined>
+) => {
+  const queryStringList: string[] = []
+
+  Object.keys(optionalParams).forEach(key => {
+    if (optionalParams[key]) {
+      queryStringList.push(`${key}=${optionalParams[key]}`)
+    }
+  })
+
+  return queryStringList.length > 0 ? '&' + queryStringList.join('&') : ''
+}
+
 const formatCacheKey = (imageQueryParams: ImageQueryParams): string => {
   const { url, cacheId, ext, w, h, fit } = imageQueryParams
-  return `${url}&cacheId=${cacheId}&w=${w ?? 'auto'}&h=${
-    h ?? 'auto'
-  }&fit=${fit}${ext ? `&ext=${ext}` : ''}`
+  return url + createOptionalQueryString({ cacheId, ext, w, h, fit })
 }
 
 export const getImageBufferFromCache = async (

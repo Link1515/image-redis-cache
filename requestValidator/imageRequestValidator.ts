@@ -31,9 +31,7 @@ export const imageRequestValidator = checkSchema(
       }
     },
     fit: {
-      default: {
-        options: 'cover'
-      },
+      optional: true,
       isIn: {
         options: [['cover', 'contain']],
         errorMessage:
@@ -63,9 +61,7 @@ export const imageRequestValidator = checkSchema(
       }
     },
     cacheId: {
-      default: {
-        options: 'default'
-      }
+      optional: true
     }
   },
   ['query']
