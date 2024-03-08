@@ -1,6 +1,7 @@
 import express from 'express'
 import 'dotenv/config'
 import compression from 'compression'
+import helmet from 'helmet'
 import { logger } from './utils/index'
 
 // routes
@@ -9,6 +10,7 @@ import image from './routes/image.route'
 
 const app = express()
 
+app.use(helmet())
 app.use(compression())
 
 app.use(image)
